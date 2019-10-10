@@ -1,20 +1,17 @@
-name: "Test typescript-action"
+name: 'Test typescript-action'
 on:
   pull_request:
-  push:
-    branches:
+    types: [opened]
+    branches-ignore:
       - master
-      - 'releases/*'
+      - release
 
 jobs:
-  test:
+  post-review-urls:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-
-    - run: npm ci
-    - run: npm run build
-    - run: npm test
-    - uses: ./
-      with: 
-        milliseconds: 1000
+      - uses: ./review-urls
+        with:
+          title: 'Review'
+          urlPattern: 'https://review.picter.io/{repo}/{branch}'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
