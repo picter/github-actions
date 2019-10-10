@@ -1,10 +1,13 @@
 name: 'Review urls'
 description: 'Provide a description here'
-author: 'Your name or organization here'
+author: 'Picter'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  title:
+    description: 'Name of review environemnt'
+  urlPattern:
+    description: 'Url pattern to create review url'
+  githubToken:
+    description: 'secrets.GITHUB_TOKEN'
 runs:
   using: 'node12'
   main: 'lib/main.js'
