@@ -2,9 +2,6 @@ name: 'Test typescript-action'
 on:
   pull_request:
     types: [opened]
-    branches-ignore:
-      - master
-      - release
 
 jobs:
   post-review-urls:
