@@ -4,10 +4,13 @@ author: 'Picter'
 inputs:
   title:
     description: 'Name of review environemnt'
+    required: true
   urlPattern:
     description: 'Url pattern to create review url'
+    required: true
   githubToken:
     description: 'secrets.GITHUB_TOKEN'
+    required: true
 runs:
   using: 'node12'
   main: 'lib/main.js'
