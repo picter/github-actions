@@ -14,20 +14,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(require("@actions/core"));
-const github_1 = __importDefault(require("@actions/github"));
+const github = __importStar(require("@actions/github"));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const title = core.getInput('title');
             const urlPattern = core.getInput('urlPattern');
             const githubToken = core.getInput('githubToken');
-            const octokit = new github_1.default.GitHub(githubToken);
-            const context = github_1.default.context;
+            const octokit = new github.GitHub(githubToken);
+            const context = github.context;
             yield octokit.issues.createComment(Object.assign({}, context.issue, { body: `*${title}:* ${urlPattern}` }));
         }
         catch (error) {
