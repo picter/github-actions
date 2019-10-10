@@ -1,5 +1,5 @@
 name: 'Review urls'
-description: 'Provide a description here'
+description: 'Posts review urls as comments to new pull requests.'
 author: 'Picter'
 inputs:
   title:
