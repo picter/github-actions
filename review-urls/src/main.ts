@@ -10,10 +10,13 @@ async function run() {
     const octokit = new github.GitHub(githubToken);
 
     const context = github.context;
+    const repo = context.repo.repo;
+    const branch = context.ref;
+    const url = urlPattern.replace('{repo}', repo).replace('{branch}', branch);
 
     await octokit.issues.createComment({
       ...context.issue,
-      body: `*${title}:* ${urlPattern}`,
+      body: `**${title}:** ${url}`,
     });
   } catch (error) {
     core.setFailed(error.message);
