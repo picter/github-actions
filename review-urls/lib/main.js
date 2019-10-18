@@ -25,7 +25,10 @@ function run() {
             const githubToken = core.getInput('githubToken');
             const octokit = new github.GitHub(githubToken);
             const context = github.context;
-            yield octokit.issues.createComment(Object.assign({}, context.issue, { body: `*${title}:* ${urlPattern}` }));
+            const repo = context.repo.repo;
+            const branch = context.ref;
+            const url = urlPattern.replace('{repo}', repo).replace('{branch}', branch);
+            yield octokit.issues.createComment(Object.assign({}, context.issue, { body: `**${title}:** ${url}` }));
         }
         catch (error) {
             core.setFailed(error.message);
