@@ -26,9 +26,11 @@ function run() {
             const octokit = new github.GitHub(githubToken);
             const context = github.context;
             const repo = context.repo.repo;
-            console.log(process.env.GITHUB_REF);
-            const ref = process.env.GITHUB_REF || '';
-            const branch = ref.replace('refs/heads/', '');
+            console.log(process.env.GITHUB_EVENT_PATH);
+            console.log(context.payload);
+            const branch = context.payload.pull_request
+                ? context.payload.pull_request.head.ref
+                : '';
             const url = urlPattern.replace('{repo}', repo).replace('{branch}', branch);
             yield octokit.issues.createComment(Object.assign({}, context.issue, { body: `**${title}:** ${url}` }));
         }
