@@ -1,5 +1,6 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
+import { WebhookPayload } from '@actions/github/lib/interfaces';
 
 async function run() {
   try {
@@ -11,11 +12,9 @@ async function run() {
 
     const context = github.context;
     const repo = context.repo.repo;
-    console.log(process.env.GITHUB_EVENT_PATH);
-    console.log(context.payload);
-    const branch = context.payload.pull_request
-      ? context.payload.pull_request.head.ref
-      : '';
+    const prPayload: WebhookPayload['pull_request'] =
+      context.payload.pull_request;
+    const branch = prPayload ? prPayload.head.ref : '';
     const url = urlPattern.replace('{repo}', repo).replace('{branch}', branch);
 
     await octokit.issues.createComment({
