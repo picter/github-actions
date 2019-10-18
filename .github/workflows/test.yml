@@ -1,7 +1,7 @@
 name: 'Test typescript-action'
 on:
   pull_request:
-    types: [opened]
+    types: [opened, assigned, unassigned]
 
 jobs:
   post-review-urls:
