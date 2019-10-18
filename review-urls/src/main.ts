@@ -11,7 +11,9 @@ async function run() {
 
     const context = github.context;
     const repo = context.repo.repo;
-    const branch = context.ref;
+    console.log(process.env.GITHUB_REF);
+    const ref: string = process.env.GITHUB_REF || '';
+    const branch = ref.replace('refs/heads/', '');
     const url = urlPattern.replace('{repo}', repo).replace('{branch}', branch);
 
     await octokit.issues.createComment({
