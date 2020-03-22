@@ -1,0 +1,13 @@
+name: "Release"
+description: "Create and update release PRs"
+author: "Picter"
+inputs:
+  releaseBranch:
+    description: "Name of release branch"
+    required: true
+  githubToken:
+    description: "secrets.GITHUB_TOKEN"
+    required: true
+runs:
+  using: "node12"
+  main: "dist/index.js"
