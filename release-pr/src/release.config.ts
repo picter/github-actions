@@ -1,4 +1,8 @@
 /* eslint-disable */
+import commitAnalyzer from '@semantic-release/commit-analyzer';
+import notesGenerator from '@semantic-release/release-notes-generator';
+import githubPublish from '@semantic-release/github';
+
 const parserSetup = {
   preset: 'angular',
   releaseRules: [{ type: 'refactor', release: 'patch' }],
@@ -11,8 +15,8 @@ const parserSetup = {
 export default {
   branch: 'master',
   plugins: [
-    ['@semantic-release/commit-analyzer', parserSetup],
-    ['@semantic-release/release-notes-generator', parserSetup],
+    [commitAnalyzer, parserSetup],
+    [notesGenerator, parserSetup],
   ],
   // prepare: [
   //   {
@@ -20,5 +24,5 @@ export default {
   //     cmd: 'bash ../src/semantic-release/setVersion.sh ${nextRelease.version}',
   //   },
   // ],
-  publish: ['@semantic-release/github'],
+  publish: [githubPublish],
 };
