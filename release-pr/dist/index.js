@@ -2957,16 +2957,21 @@ function run() {
             const context = github.context;
             const pushPayload = context.payload;
             const branch = pushPayload.ref;
-            const openPRs = yield octokit.pulls.list(Object.assign({}, context.repo, { head: branch, base: releaseBranch, state: 'open' }));
-            console.log(openPRs);
-            try {
-                yield octokit.pulls.create(Object.assign({}, context.repo, { base: releaseBranch, head: branch, title: 'Next release' }));
-            }
-            catch (error) {
-                // only fail if error is other than "PR already exists"
-                if (!error.message.match(/A pull request already exists/)) {
-                    core.setFailed(error.message);
+            const { data: openPRs } = yield octokit.pulls.list(Object.assign({}, context.repo, { head: branch, base: releaseBranch, state: 'open' }));
+            if (openPRs.length === 0) {
+                try {
+                    yield octokit.pulls.create(Object.assign({}, context.repo, { base: releaseBranch, head: branch, title: 'Next release' }));
                 }
+                catch (error) {
+                    // only fail if error is other than "PR already exists"
+                    if (!error.message.match(/A pull request already exists/)) {
+                        core.setFailed(error.message);
+                    }
+                }
+            }
+            else {
+                const pullNumber = openPRs[0].number;
+                yield octokit.pulls.update(Object.assign({}, context.repo, { pull_number: pullNumber, body: `last commit: ${pushPayload.head_commit}` }));
             }
         }
         catch (error) {
