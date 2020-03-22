@@ -2955,14 +2955,18 @@ function run() {
             const githubToken = core.getInput('githubToken');
             const octokit = new github.GitHub(githubToken);
             const context = github.context;
-            const repo = context.repo.repo;
             const pushPayload = context.payload;
             const branch = pushPayload.ref;
+            const openPRs = yield octokit.pulls.list(Object.assign({}, context.repo, { head: branch, base: releaseBranch, state: 'open' }));
+            console.log(openPRs);
             try {
                 yield octokit.pulls.create(Object.assign({}, context.repo, { base: releaseBranch, head: branch, title: 'Next release' }));
             }
             catch (error) {
-                console.log(error);
+                // only fail if error is other than "PR already exists"
+                if (!error.message.match(/A pull request already exists/)) {
+                    core.setFailed(error.message);
+                }
             }
         }
         catch (error) {
