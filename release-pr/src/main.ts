@@ -1,6 +1,8 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import * as Webhooks from '@octokit/webhooks';
+import semanticRelease from 'semantic-release';
+import config from './release.config';
 
 async function run() {
   try {
@@ -12,8 +14,27 @@ async function run() {
     const context = github.context;
     const pushPayload = context.payload as Webhooks.WebhookPayloadPush;
     const branch = pushPayload.ref;
+    const { owner, repo } = context.repo;
+
+    const result = await semanticRelease(
+      {
+        ...config,
+        debug: true,
+        branch,
+        repositoryUrl: `https://github.com/${owner}/${repo}.git`,
+        dryRun: true,
+        noCi: true,
+      },
+      {
+        //  cwd: `${process.cwd()}/${repo}`,
+        //env: { ...process.env },
+      },
+    );
+    console.log(JSON.stringify(result));
+
     const { data: openPRs } = await octokit.pulls.list({
-      ...context.repo,
+      owner,
+      repo,
       head: branch,
       base: releaseBranch,
       state: 'open',
@@ -21,7 +42,8 @@ async function run() {
     if (openPRs.length === 0) {
       try {
         await octokit.pulls.create({
-          ...context.repo,
+          owner,
+          repo,
           base: releaseBranch,
           head: branch,
           title: 'Next release',
@@ -37,7 +59,7 @@ async function run() {
       await octokit.pulls.update({
         ...context.repo,
         pull_number: pullNumber,
-        body: `last commit: ${pushPayload.head_commit}`,
+        body: `last commit: ${JSON.stringify(pushPayload.head_commit)}`,
       });
     }
   } catch (error) {
