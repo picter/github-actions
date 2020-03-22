@@ -16101,10 +16101,10 @@ function conventionalChangelogWriter (context, options) {
     includeDetails: false,
     ignoreReverted: true,
     doFlush: true,
-    mainTemplate: readFileSync(__webpack_require__.ab + "template.hbs", 'utf-8'),
-    headerPartial: readFileSync(__webpack_require__.ab + "header.hbs", 'utf-8'),
-    commitPartial: readFileSync(__webpack_require__.ab + "commit.hbs", 'utf-8'),
-    footerPartial: readFileSync(__webpack_require__.ab + "footer.hbs", 'utf-8')
+    mainTemplate: readFileSync(__webpack_require__.ab + "template1.hbs", 'utf-8'),
+    headerPartial: readFileSync(__webpack_require__.ab + "header1.hbs", 'utf-8'),
+    commitPartial: readFileSync(__webpack_require__.ab + "commit1.hbs", 'utf-8'),
+    footerPartial: readFileSync(__webpack_require__.ab + "footer1.hbs", 'utf-8')
   }, options)
 
   if ((!_.isFunction(options.transform) && _.isObject(options.transform)) || _.isUndefined(options.transform)) {
@@ -23374,13 +23374,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable */
 const commit_analyzer_1 = __importDefault(__webpack_require__(372));
 const release_notes_generator_1 = __importDefault(__webpack_require__(559));
+const conventional_changelog_angular_1 = __importDefault(__webpack_require__(746));
 const parserSetup = {
-    preset: 'angular',
+    // Since this action will be bundled with ncc (see build script in package.json)
+    // we can't rely on any auto-resolving from node_modules packages. There
+    // is no node_mdules folder in dist/. That's why we need to import angular presets
+    // and set this preset-config to null (every string will be tried to resolve like
+    // node_modules/conventional-changelog-{preset}).
+    preset: null,
     releaseRules: [{ type: 'refactor', release: 'patch' }],
-    parserOpts: {
-        mergePattern: /^Merge pull request #(.*) from (.*)$/m,
-        mergeCorrespondence: ['id', 'source'],
-    },
+    parserOpts: Object.assign({}, conventional_changelog_angular_1.default, { mergePattern: /^Merge pull request #(.*) from (.*)$/m, mergeCorrespondence: ['id', 'source'] }),
 };
 exports.default = {
     branch: 'master',
@@ -85789,10 +85792,10 @@ const readFile = Q.denodeify(__webpack_require__(747).readFile)
 const resolve = __webpack_require__(622).resolve
 
 module.exports = Q.all([
-  readFile(__webpack_require__.ab + "template1.hbs", `utf-8`),
-  readFile(__webpack_require__.ab + "header1.hbs", `utf-8`),
-  readFile(__webpack_require__.ab + "commit1.hbs", `utf-8`),
-  readFile(__webpack_require__.ab + "footer1.hbs", `utf-8`)
+  readFile(__webpack_require__.ab + "template.hbs", `utf-8`),
+  readFile(__webpack_require__.ab + "header.hbs", `utf-8`),
+  readFile(__webpack_require__.ab + "commit.hbs", `utf-8`),
+  readFile(__webpack_require__.ab + "footer.hbs", `utf-8`)
 ])
   .spread((template, header, commit, footer) => {
     const writerOpts = getWriterOpts()
