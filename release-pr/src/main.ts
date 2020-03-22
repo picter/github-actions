@@ -4,6 +4,17 @@ import * as Webhooks from '@octokit/webhooks';
 import semanticRelease from 'semantic-release';
 import config from './release.config';
 
+interface SemanticReleaseResult {
+  nextRelease: {
+    type: string;
+    version: string;
+    gitHead: string;
+    gitTag: string;
+    notes: string;
+    channel: string;
+  };
+}
+
 async function run() {
   try {
     const releaseBranch = core.getInput('releaseBranch');
@@ -16,7 +27,7 @@ async function run() {
     const branch = pushPayload.ref;
     const { owner, repo } = context.repo;
 
-    const result = await semanticRelease(
+    const result: SemanticReleaseResult = await semanticRelease(
       {
         ...config,
         debug: true,
@@ -30,7 +41,7 @@ async function run() {
         //env: { ...process.env },
       },
     );
-    console.log(JSON.stringify(result));
+    console.log(JSON.stringify(result.nextRelease));
 
     const { data: openPRs } = await octokit.pulls.list({
       owner,
@@ -46,7 +57,8 @@ async function run() {
           repo,
           base: releaseBranch,
           head: branch,
-          title: 'Next release',
+          title: `Next release: v${result.nextRelease.version}`,
+          body: result.nextRelease.notes,
         });
       } catch (error) {
         // only fail if error is other than "PR already exists"
@@ -59,7 +71,8 @@ async function run() {
       await octokit.pulls.update({
         ...context.repo,
         pull_number: pullNumber,
-        body: `last commit: ${JSON.stringify(pushPayload.head_commit)}`,
+        title: `Next release: v${result.nextRelease.version}`,
+        body: result.nextRelease.notes,
       });
     }
   } catch (error) {

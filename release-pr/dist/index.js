@@ -15286,7 +15286,7 @@ function run() {
             //  cwd: `${process.cwd()}/${repo}`,
             //env: { ...process.env },
             });
-            console.log(JSON.stringify(result));
+            console.log(JSON.stringify(result.nextRelease));
             const { data: openPRs } = yield octokit.pulls.list({
                 owner,
                 repo,
@@ -15301,7 +15301,8 @@ function run() {
                         repo,
                         base: releaseBranch,
                         head: branch,
-                        title: 'Next release',
+                        title: `Next release: v${result.nextRelease.version}`,
+                        body: result.nextRelease.notes,
                     });
                 }
                 catch (error) {
@@ -15313,7 +15314,7 @@ function run() {
             }
             else {
                 const pullNumber = openPRs[0].number;
-                yield octokit.pulls.update(Object.assign({}, context.repo, { pull_number: pullNumber, body: `last commit: ${JSON.stringify(pushPayload.head_commit)}` }));
+                yield octokit.pulls.update(Object.assign({}, context.repo, { pull_number: pullNumber, title: `Next release: v${result.nextRelease.version}`, body: result.nextRelease.notes }));
             }
         }
         catch (error) {
