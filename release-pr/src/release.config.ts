@@ -24,5 +24,5 @@ export default {
   //     cmd: 'bash ../src/semantic-release/setVersion.sh ${nextRelease.version}',
   //   },
   // ],
-  publish: [githubPublish],
+  // publish: [githubPublish],
 };
