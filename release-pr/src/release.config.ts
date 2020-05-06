@@ -14,8 +14,6 @@ const parserSetup = {
   releaseRules: [{ type: 'refactor', release: 'patch' }],
   parserOpts: {
     ...angularPreset,
-    mergePattern: /^Merge pull request #(.*) from (.*)$/m,
-    mergeCorrespondence: ['id', 'source'],
   },
 };
 

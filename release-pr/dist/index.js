@@ -23384,7 +23384,7 @@ const parserSetup = {
     // node_modules/conventional-changelog-{preset}).
     preset: null,
     releaseRules: [{ type: 'refactor', release: 'patch' }],
-    parserOpts: Object.assign({}, conventional_changelog_angular_1.default, { mergePattern: /^Merge pull request #(.*) from (.*)$/m, mergeCorrespondence: ['id', 'source'] }),
+    parserOpts: Object.assign({}, conventional_changelog_angular_1.default),
 };
 exports.default = {
     branch: 'master',
