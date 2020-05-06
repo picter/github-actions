@@ -31,7 +31,7 @@ async function run() {
       {
         ...config,
         debug: true,
-        branch,
+        branches: [branch],
         repositoryUrl: `https://github.com/${owner}/${repo}.git`,
         // dryRun: true,
         // noCi: true,
