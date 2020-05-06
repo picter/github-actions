@@ -1,0 +1,17 @@
+name: 'Release'
+description: 'Create new release (git-tag and GitHub)'
+author: 'Picter'
+inputs:
+  releaseBranch:
+    description: 'Name of release branch'
+    required: true
+  masterBranch:
+    description: 'Name of master branch for merge back'
+    required: false
+    default: 'master'
+  githubToken:
+    description: 'secrets.GITHUB_TOKEN'
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
