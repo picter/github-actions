@@ -26,12 +26,13 @@ async function run() {
     const pushPayload = context.payload as Webhooks.WebhookPayloadPush;
     const branch = pushPayload.ref;
     const { owner, repo } = context.repo;
-
+    console.log('branch', branch);
+    console.log('pushPayload', pushPayload);
     const result: SemanticReleaseResult = await semanticRelease(
       {
         ...config,
         debug: true,
-        branches: [branch],
+        branches: ['release'],
         repositoryUrl: `https://github.com/${owner}/${repo}.git`,
         // dryRun: true,
         // noCi: true,

@@ -20,7 +20,6 @@ const parserSetup = {
 };
 
 export default {
-  branch: 'master',
   plugins: [
     [commitAnalyzer, parserSetup],
     [notesGenerator, parserSetup],
