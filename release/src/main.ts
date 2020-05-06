@@ -17,7 +17,6 @@ interface SemanticReleaseResult {
 
 async function run() {
   try {
-    const releaseBranch = core.getInput('releaseBranch');
     const masterBranch = core.getInput('masterBranch');
     const githubToken = core.getInput('githubToken');
 
@@ -47,7 +46,7 @@ async function run() {
       owner,
       repo,
       head: branch,
-      base: releaseBranch,
+      base: masterBranch,
       state: 'open',
     });
     if (openPRs.length === 0) {
@@ -55,8 +54,8 @@ async function run() {
         await octokit.pulls.create({
           owner,
           repo,
-          base: masterBranch,
           head: branch,
+          base: masterBranch,
           title: `chore: Merge back release v${result.nextRelease.version} [skip ci]`,
           body: result.nextRelease.notes,
         });

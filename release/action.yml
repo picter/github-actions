@@ -2,9 +2,6 @@ name: 'Release'
 description: 'Create new release (git-tag and GitHub)'
 author: 'Picter'
 inputs:
-  releaseBranch:
-    description: 'Name of release branch'
-    required: true
   masterBranch:
     description: 'Name of master branch for merge back'
     required: false
