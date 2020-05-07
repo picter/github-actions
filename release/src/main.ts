@@ -32,23 +32,16 @@ async function run() {
       return;
     }
     const branch = pushPayload.ref;
+    const branchName = branch.replace('refs/heads/', '');
     const { owner, repo } = context.repo;
     console.log('branch', branch);
-    console.log('pushPayload', pushPayload);
-    const result: SemanticReleaseResult = await semanticRelease(
-      {
-        ...config,
-        debug: true,
-        branches: ['release'],
-        repositoryUrl: `https://github.com/${owner}/${repo}.git`,
-        // dryRun: true,
-        // noCi: true,
-      },
-      {
-        //  cwd: `${process.cwd()}/${repo}`,
-        //env: { ...process.env },
-      },
-    );
+    console.log('branchName', branchName);
+    const result: SemanticReleaseResult = await semanticRelease({
+      ...config,
+      debug: true,
+      branches: [branchName],
+      repositoryUrl: `https://github.com/${owner}/${repo}.git`,
+    });
 
     const { data: openPRs } = await octokit.pulls.list({
       owner,
