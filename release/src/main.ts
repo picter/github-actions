@@ -24,6 +24,13 @@ async function run() {
 
     const context = github.context;
     const pushPayload = context.payload as Webhooks.WebhookPayloadPush;
+    const lastCommit: { message: string } = pushPayload.commits.pop();
+    if (lastCommit.message.includes('[skip ci]')) {
+      core.info(
+        'Found [skip ci] flag in last commit message. Skipping this push.',
+      );
+      return;
+    }
     const branch = pushPayload.ref;
     const { owner, repo } = context.repo;
     console.log('branch', branch);
