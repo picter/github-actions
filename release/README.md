@@ -1,113 +1,82 @@
-# Create a JavaScript Action using TypeScript
+# Release action
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+This action uses [Semnatic Release](https://github.com/semantic-release/semantic-release) to create new releases
+of your repostitory. It performs the following tasks:
 
-This template includes compilication support, tests, a validation workflow, publishing, and versioning guidance.  
+- Analyze commits based on the
+  [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) to find the next version number and create a changelog
+- Bump the version number on package.json, commit it and tag this new commit with a semver tag
+- Create a GitHub release with a changelog based on the analyzed commits
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+## Usage
 
-## Create an action from this template
+With protected branch:
 
-Click the `Use this Template` and provide the new repo details for your action
+```yml
+# .github/workflows/release.yml
 
-## Code in Master
+name: 'Release'
+on:
+  push:
+    # trigger this action on pushes to these branches
+    branches:
+      - release
 
-Install the dependencies  
-```bash
-$ npm install
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # This setting is important, to allow Semantic Release
+          # to reset the auth token when perfoming git actions.
+          # Check this out: https://github.com/semantic-release/git/issues/196#issuecomment-601310576
+          persist-credentials: false
+      - name: Release
+        env:
+          # Credentials used to perform the release and
+          # commit the updated assets to a protected branch.
+          # This needs to be a Personal Access Token of a user
+          # that has permission to push to the protected branch.
+          # This token needs to be defined in the secrets repo-settings.
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_XXX }}
+        uses: picter/github-actions/release@master
+        with:
+          # This branch will be used as merge back target to bring
+          # the version bumps back to master.
+          masterBranch: 'master'
+          # This token will be used to create the merge-back PR and the
+          # GitHub Release.
+          githubToken: ${{ secrets.GH_TOKEN_XXX }}
 ```
 
-Build the typescript
-```bash
-$ npm run build
-```
+With un-protected branch:
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
+```yml
+# .github/workflows/release.yml
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+name: 'Release'
+on:
+  push:
+    # trigger this action on pushes to these branches
+    branches:
+      - release
 
-...
-```
-
-## Change action.yml
-
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos.  We will create a releases branch and only checkin production modules (core in this case). 
-
-Comment out node_modules in .gitignore and create a releases/v1 branch
-```bash
-# comment out in distribution branches
-# node_modules/
-```
-
-```bash
-$ git checkout -b releases/v1
-$ git commit -a -m "prod dependencies"
-```
-
-```bash
-$ npm prune --production
-$ git add node_modules
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing the releases/v1 branch
-
-```yaml
-uses: actions/typescript-action@releases/v1
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and tested action
-
-```yaml
-uses: actions/typescript-action@v1
-with:
-  milliseconds: 1000
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Release
+        env:
+          # Pass credentials to Semantic Release modules
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: picter/github-actions/release@master
+        with:
+          # This branch will be used as merge back target to bring
+          # the version bumps back to master.
+          masterBranch: 'master'
+          # This token will be used to create the merge-back PR and the
+          # GitHub Release.
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
