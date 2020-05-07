@@ -15282,11 +15282,11 @@ function run() {
             const pushPayload = context.payload;
             const branch = pushPayload.ref;
             const { owner, repo } = context.repo;
-            const result = yield semantic_release_1.default(Object.assign({}, release_config_1.default, { debug: true, branch, repositoryUrl: `https://github.com/${owner}/${repo}.git`, dryRun: true, noCi: true }), {
-            //  cwd: `${process.cwd()}/${repo}`,
-            //env: { ...process.env },
-            });
-            console.log(JSON.stringify(result.nextRelease));
+            const result = yield semantic_release_1.default(Object.assign({}, release_config_1.default, { debug: true, branch, repositoryUrl: `https://github.com/${owner}/${repo}.git`, dryRun: true, noCi: true }));
+            if (!result.nextRelease) {
+                core.info('No releasable updates detected');
+                return;
+            }
             const { data: openPRs } = yield octokit.pulls.list({
                 owner,
                 repo,

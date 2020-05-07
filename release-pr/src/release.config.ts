@@ -1,7 +1,6 @@
 /* eslint-disable */
 import commitAnalyzer from '@semantic-release/commit-analyzer';
 import notesGenerator from '@semantic-release/release-notes-generator';
-import githubPublish from '@semantic-release/github';
 import angularPreset from 'conventional-changelog-angular';
 
 const parserSetup = {
@@ -23,11 +22,4 @@ export default {
     [commitAnalyzer, parserSetup],
     [notesGenerator, parserSetup],
   ],
-  // prepare: [
-  //   {
-  //     path: '@semantic-release/exec',
-  //     cmd: 'bash ../src/semantic-release/setVersion.sh ${nextRelease.version}',
-  //   },
-  // ],
-  // publish: [githubPublish],
 };

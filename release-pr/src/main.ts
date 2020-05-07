@@ -27,21 +27,18 @@ async function run() {
     const branch = pushPayload.ref;
     const { owner, repo } = context.repo;
 
-    const result: SemanticReleaseResult = await semanticRelease(
-      {
-        ...config,
-        debug: true,
-        branch,
-        repositoryUrl: `https://github.com/${owner}/${repo}.git`,
-        dryRun: true,
-        noCi: true,
-      },
-      {
-        //  cwd: `${process.cwd()}/${repo}`,
-        //env: { ...process.env },
-      },
-    );
-    console.log(JSON.stringify(result.nextRelease));
+    const result: SemanticReleaseResult = await semanticRelease({
+      ...config,
+      debug: true,
+      branch,
+      repositoryUrl: `https://github.com/${owner}/${repo}.git`,
+      dryRun: true,
+      noCi: true,
+    });
+    if (!result.nextRelease) {
+      core.info('No releasable updates detected');
+      return;
+    }
 
     const { data: openPRs } = await octokit.pulls.list({
       owner,
