@@ -34,8 +34,6 @@ async function run() {
     const branch = pushPayload.ref;
     const branchName = branch.replace('refs/heads/', '');
     const { owner, repo } = context.repo;
-    console.log('branch', branch);
-    console.log('branchName', branchName);
     const result: SemanticReleaseResult = await semanticRelease({
       ...config,
       debug: true,
@@ -46,12 +44,11 @@ async function run() {
     const { data: openPRs } = await octokit.pulls.list({
       owner,
       repo,
-      head: branch,
+      head: `${owner}:${branchName}`,
       base: masterBranch,
       state: 'open',
     });
     if (openPRs.length === 0) {
-      console.log('No open PRs found');
       try {
         await octokit.pulls.create({
           owner,
@@ -68,8 +65,6 @@ async function run() {
         }
       }
     } else {
-      console.log('Open PRs found');
-      console.log(openPRs);
       const pullNumber = openPRs[0].number;
       await octokit.pulls.update({
         ...context.repo,
