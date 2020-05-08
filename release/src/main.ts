@@ -51,6 +51,7 @@ async function run() {
       state: 'open',
     });
     if (openPRs.length === 0) {
+      console.log('No open PRs found');
       try {
         await octokit.pulls.create({
           owner,
@@ -67,6 +68,8 @@ async function run() {
         }
       }
     } else {
+      console.log('Open PRs found');
+      console.log(openPRs);
       const pullNumber = openPRs[0].number;
       await octokit.pulls.update({
         ...context.repo,
